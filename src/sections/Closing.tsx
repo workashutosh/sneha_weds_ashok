@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { wedding } from '../config/wedding'
 import { Mandala } from '../components/art/Mandala'
-import { Divider, Diya } from '../components/art/Ornaments'
+import { Divider } from '../components/art/Ornaments'
+import skyLantern from '../assets/sky-lantern.webp'
 import { Elephant } from '../components/art/Elephant'
 import toran from '../assets/toran.webp'
 import doli from '../assets/el2-doli.webp'
@@ -131,14 +132,14 @@ function useFireworks(canvasRef: React.RefObject<HTMLCanvasElement | null>, sect
   }, [canvasRef, sectionRef])
 }
 
-/** floating diyas drifting upward behind the content (CSS only → GPU-cheap) */
-function FloatingDiyas() {
+/** sky lanterns drifting upward behind the content (CSS only → GPU-cheap) */
+function FloatingLanterns() {
   const items = Array.from({ length: isSmall ? 7 : 11 }, (_, i) => {
     const r = (n: number) => {
       const x = Math.sin((i + 1) * 91.7 + n * 12.9) * 43758.5
       return x - Math.floor(x)
     }
-    return { left: 4 + r(1) * 92, size: 26 + r(2) * 22, delay: -r(3) * 14, dur: 12 + r(4) * 8 }
+    return { left: 4 + r(1) * 92, size: 16 + r(2) * 16, delay: -r(3) * 18, dur: 16 + r(4) * 10, sway: r(5) > 0.5 ? 1 : -1 }
   })
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
@@ -146,9 +147,9 @@ function FloatingDiyas() {
         <div
           key={i}
           className="cl-rise absolute bottom-0"
-          style={{ left: `${d.left}%`, width: d.size, animationDelay: `${d.delay}s`, animationDuration: `${d.dur}s` }}
+          style={{ left: `${d.left}%`, width: d.size, animationDelay: `${d.delay}s`, animationDuration: `${d.dur}s`, ['--sway' as string]: d.sway }}
         >
-          <Diya className="w-full" />
+          <img src={skyLantern} alt="" className="block w-full" loading="lazy" decoding="async" width={120} height={149} />
         </div>
       ))}
     </div>
@@ -207,7 +208,7 @@ export function Closing() {
     >
       <div className="lattice pointer-events-none absolute inset-0 opacity-70" aria-hidden />
       <div className="pointer-events-none absolute inset-0" aria-hidden style={{ background: 'radial-gradient(90% 60% at 50% 38%, rgba(255,248,231,.97), rgba(255,248,231,.4) 70%, transparent)' }} />
-      <FloatingDiyas />
+      <FloatingLanterns />
 
       {/* temple bells across the top */}
       <div className="cl-bells pointer-events-none absolute inset-x-0 top-0 z-10 h-[clamp(64px,19vw,110px)] bg-repeat-x" style={{ backgroundImage: `url(${toran})`, backgroundSize: 'auto 100%', backgroundPosition: 'center top' }} aria-hidden />

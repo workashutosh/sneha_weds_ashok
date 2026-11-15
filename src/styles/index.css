@@ -472,7 +472,7 @@ h3 {
   background-size: 64px 64px;
 }
 
-/* closing page: diyas floating up like sky lanterns */
+/* closing page: sky lanterns floating up */
 .cl-rise {
   opacity: 0;
   animation: cl-rise 16s linear infinite;
@@ -480,17 +480,20 @@ h3 {
 }
 @keyframes cl-rise {
   0% {
-    transform: translate3d(0, 0, 0) scale(0.8);
+    transform: translate3d(0, 0, 0) scale(0.85);
     opacity: 0;
   }
-  10% {
-    opacity: 0.85;
+  12% {
+    opacity: 0.55;
   }
-  80% {
-    opacity: 0.6;
+  50% {
+    transform: translate3d(calc(var(--sway, 1) * 18px), -55vh, 0) scale(0.95);
+  }
+  85% {
+    opacity: 0.4;
   }
   100% {
-    transform: translate3d(14px, -110vh, 0) scale(1.05);
+    transform: translate3d(calc(var(--sway, 1) * 6px), -110vh, 0) scale(0.75);
     opacity: 0;
   }
 }
