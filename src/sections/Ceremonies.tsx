@@ -32,7 +32,7 @@ function ArchCard({ e }: { e: WeddingEvent }) {
         <div className="paper relative overflow-hidden rounded-t-[999px] rounded-b-[15px] px-4 pb-9 pt-[22%] text-center sm:px-6">
           <div className="pointer-events-none absolute inset-[7px] rounded-t-[999px] rounded-b-[11px] border border-gold/50" aria-hidden />
           <Ganesha className="mx-auto w-14 [filter:brightness(.62)_saturate(1.5)]" />
-          <h3 className="mt-3 font-script text-[clamp(2.5rem,11vw,3.3rem)] leading-[1.05] text-sindoor">{e.name}</h3>
+          <h3 className="mt-3 font-script text-[clamp(1.55rem,6.8vw,2.1rem)] leading-[1.15] text-sindoor">{e.name}</h3>
           <p className="mt-1 font-hindi text-lg text-maroon/80" lang="hi">
             {e.hindi}
           </p>
@@ -116,7 +116,7 @@ export function Ceremonies() {
 
       <div className="ev-head relative mx-auto max-w-xl px-5 text-center">
         <p className="font-display text-sm tracking-[0.3em] text-gold-dark sm:text-lg">THE CELEBRATIONS</p>
-        <h2 className="mt-2 font-script text-5xl text-sindoor sm:text-6xl">Ceremonies</h2>
+        <h2 className="mt-2 font-script text-[2rem] text-sindoor sm:text-[2.8rem]">Ceremonies</h2>
         <p className="mt-1 font-hindi text-lg text-maroon/80" lang="hi">
           शुभ मुहूर्त
         </p>

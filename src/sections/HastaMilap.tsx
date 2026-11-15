@@ -53,7 +53,7 @@ export function HastaMilap() {
           <p className="mt-1 font-hindi text-lg text-sindoor" lang="hi">
             {t.hindi}
           </p>
-          <h2 className="mt-2 font-script text-[clamp(2.6rem,11vw,4.6rem)] leading-[1.05] text-maroon">
+          <h2 className="mt-2 font-script text-[clamp(1.7rem,7.4vw,3rem)] leading-[1.1] text-maroon">
             <span className="maroon-foil">{t.title}</span>
           </h2>
         </div>

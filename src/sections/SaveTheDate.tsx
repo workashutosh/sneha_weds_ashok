@@ -81,7 +81,7 @@ function Countdown() {
   }, [])
   if (t.done)
     return (
-      <p className="font-script text-4xl text-sindoor" role="status">
+      <p className="font-script text-2xl text-sindoor" role="status">
         The celebrations have begun!
       </p>
     )
@@ -149,7 +149,7 @@ export function SaveTheDate() {
           {chars(yyyy)}
         </h2>
 
-        <p className="sd-week mt-3 font-script text-4xl text-sindoor sm:text-5xl">{wedding.weddingDate.weekday}</p>
+        <p className="sd-week mt-3 font-script text-[1.6rem] text-sindoor sm:text-[2rem]">{wedding.weddingDate.weekday}</p>
         <p className="sd-week mt-1 font-hindi text-lg text-maroon/80" lang="hi">
           {wedding.weddingDate.hindi}
         </p>

@@ -56,7 +56,7 @@ function weddingPlugin(): Plugin[] {
       transformIndexHtml: {
         order: 'post',
         handler(_html, ctx) {
-          const font = Object.keys(ctx.bundle ?? {}).find((f) => /allura-latin-400-normal.*\.woff2$/.test(f))
+          const font = Object.keys(ctx.bundle ?? {}).find((f) => /cormorant-garamond-latin-500-normal.*\.woff2$/.test(f))
           if (!font) return
           return [
             {

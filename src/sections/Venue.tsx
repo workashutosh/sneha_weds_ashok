@@ -76,7 +76,7 @@ export function Venue() {
       <Scallop color="#b8956a" className="absolute inset-x-0 top-0" />
       <div className="relative mx-auto max-w-xl text-center">
         <p className="font-display text-sm tracking-[0.3em] text-gold-dark sm:text-lg">THE VENUE</p>
-        <h2 className="mt-2 font-script text-5xl text-sindoor sm:text-6xl">Where hearts meet</h2>
+        <h2 className="mt-2 font-script text-[2rem] text-sindoor sm:text-[2.8rem]">Where hearts meet</h2>
         <p className="mt-1 font-hindi text-lg text-maroon/80" lang="hi">
           विवाह स्थल
         </p>

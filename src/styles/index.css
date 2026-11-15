@@ -17,7 +17,7 @@
 
   --font-display: 'Cinzel Decorative', 'Playfair Display', Georgia, serif;
   --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --font-script: 'Allura', 'Snell Roundhand', cursive;
+  --font-script: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   --font-hindi: 'Tiro Devanagari Hindi', 'Noto Serif Devanagari', serif;
 
   --ease-royal: cubic-bezier(0.22, 1, 0.36, 1);
@@ -470,4 +470,41 @@ h3 {
 .lattice {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g fill='none' stroke='%23c9d6d8' stroke-width='1.4'><path d='M0 16 H16 V0 M48 0 V16 H64 M64 48 H48 V64 M16 64 V48 H0 M16 16 L32 26 L48 16 M16 48 L32 38 L48 48 M16 16 L26 32 L16 48 M48 16 L38 32 L48 48'/></g></svg>");
   background-size: 64px 64px;
+}
+
+/* closing page: diyas floating up like sky lanterns */
+.cl-rise {
+  opacity: 0;
+  animation: cl-rise 16s linear infinite;
+  will-change: transform, opacity;
+}
+@keyframes cl-rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate3d(14px, -110vh, 0) scale(1.05);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-rise {
+    display: none;
+  }
+}
+
+/* elegant display caps (replaces the old script font everywhere) */
+@layer components {
+  .font-script {
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 }

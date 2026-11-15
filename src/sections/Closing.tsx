@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { wedding } from '../config/wedding'
 import { Mandala } from '../components/art/Mandala'
-import { Divider } from '../components/art/Ornaments'
-import { Lantern } from '../components/art/Lantern'
-import lotusA from '../assets/el-lotus-a.webp'
-import lotusB from '../assets/el-lotus-b.webp'
+import { Divider, Diya } from '../components/art/Ornaments'
+import { Elephant } from '../components/art/Elephant'
+import toran from '../assets/toran.webp'
+import doli from '../assets/el2-doli.webp'
+import umbrella from '../assets/el2-umbrella.webp'
+import lotusPond from '../assets/el2-lotus-pond.webp'
 import peacock from '../assets/el-peacock.webp'
 import { fx, gsap, ScrollTrigger, scrollToTop, useGsap } from '../lib/scroll'
 import { fxBudget, isSmall, reducedMotion } from '../lib/env'
@@ -129,9 +131,34 @@ function useFireworks(canvasRef: React.RefObject<HTMLCanvasElement | null>, sect
   }, [canvasRef, sectionRef])
 }
 
+/** floating diyas drifting upward behind the content (CSS only → GPU-cheap) */
+function FloatingDiyas() {
+  const items = Array.from({ length: isSmall ? 7 : 11 }, (_, i) => {
+    const r = (n: number) => {
+      const x = Math.sin((i + 1) * 91.7 + n * 12.9) * 43758.5
+      return x - Math.floor(x)
+    }
+    return { left: 4 + r(1) * 92, size: 26 + r(2) * 22, delay: -r(3) * 14, dur: 12 + r(4) * 8 }
+  })
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      {items.map((d, i) => (
+        <div
+          key={i}
+          className="cl-rise absolute bottom-0"
+          style={{ left: `${d.left}%`, width: d.size, animationDelay: `${d.delay}s`, animationDuration: `${d.dur}s` }}
+        >
+          <Diya className="w-full" />
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function Closing() {
   const root = useRef<HTMLElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
+  const mono = useRef<HTMLDivElement>(null)
   useFireworks(canvas, root)
 
   useGsap(root, () => {
@@ -145,11 +172,28 @@ export function Closing() {
       onLeaveBack: () => music.swell(false),
     })
     if (reducedMotion) return
-    const tl = gsap.timeline({ scrollTrigger: { trigger: root.current, start: 'top 55%' } })
-    tl.fromTo('.cl-mandala', { scale: 0.3, rotate: -90, autoAlpha: 0 }, { scale: 1, rotate: 0, autoAlpha: 1, duration: 2.4, ease: 'expo.out' })
-      .to('.cl-mandala .draw', { strokeDashoffset: 0, duration: 2.6, stagger: 0.12, ease: 'power2.inOut' }, 0)
-      .from('.cl-mono > *', { autoAlpha: 0, scale: 0.6, y: 20, stagger: 0.18, duration: 1.2, ease: 'back.out(1.8)' }, 0.6)
-      .from('.cl-fade', { autoAlpha: 0, y: 24, stagger: 0.14, duration: 1.1 }, 1.1)
+    const tl = gsap.timeline({
+      defaults: { ease: 'power3.out' },
+      scrollTrigger: { trigger: root.current, start: 'top 60%', once: true },
+      onComplete: () => {
+        if (!mono.current) return
+        const r = mono.current.getBoundingClientRect()
+        if (r.bottom > 0 && r.top < innerHeight) fx.burst(r.left + r.width / 2, r.top + r.height / 2, 44, true)
+      },
+    })
+    tl.from('.cl-bells', { yPercent: -60, autoAlpha: 0, duration: 1.2, ease: 'power3.out' }, 0)
+      .from('.cl-rays', { autoAlpha: 0, scale: 0.6, duration: 1.6 }, 0)
+      .from('.cl-arch', { y: 70, autoAlpha: 0, duration: 1.1 }, 0.15)
+      .fromTo('.cl-mandala', { scale: 0.4, rotate: -90 }, { scale: 1, rotate: 0, duration: 2, ease: 'expo.out' }, 0.3)
+      .to('.cl-mandala .draw', { strokeDashoffset: 0, duration: 2.2, stagger: 0.1, ease: 'power2.inOut' }, 0.3)
+      .from('.cl-peacock-l', { x: -40, autoAlpha: 0, duration: 0.9 }, 0.8)
+      .from('.cl-peacock-r', { x: 40, autoAlpha: 0, duration: 0.9 }, 0.8)
+      .from('.cl-mono > *', { autoAlpha: 0, scale: 0.5, y: 16, stagger: 0.18, duration: 1, ease: 'back.out(2)' }, 0.9)
+      .from('.cl-in-arch', { autoAlpha: 0, y: 16, stagger: 0.12, duration: 0.8 }, 1.5)
+      .from('.cl-fade', { autoAlpha: 0, y: 22, stagger: 0.12, duration: 0.9 }, 1.8)
+      .from('.cl-ele-l', { xPercent: -120, autoAlpha: 0, duration: 1.6, ease: 'power2.out' }, 2.1)
+      .from('.cl-ele-r', { xPercent: 120, autoAlpha: 0, duration: 1.6, ease: 'power2.out' }, 2.1)
+      .from('.cl-doli', { y: 40, autoAlpha: 0, duration: 1 }, 2.5)
   })
 
   const { bride, groom, closing } = wedding
@@ -157,50 +201,95 @@ export function Closing() {
   return (
     <section
       ref={root}
-      className="section flex flex-col items-center justify-center px-5 pb-16 pt-24 text-center"
+      className="section flex flex-col items-center justify-center px-5 pb-[max(150px,20vw)] pt-[min(30vw,150px)] text-center sm:pb-28"
       style={{ background: '#f3f7f7' }}
       aria-label="Closing"
     >
       <div className="lattice pointer-events-none absolute inset-0 opacity-70" aria-hidden />
-      <div className="pointer-events-none absolute inset-0" aria-hidden style={{ background: 'radial-gradient(90% 60% at 50% 40%, rgba(255,248,231,.95), rgba(255,248,231,.35) 70%, transparent)' }} />
-      <Lantern className="absolute left-[4%] top-0 w-10 sm:left-[10%] sm:w-14" />
-      <Lantern className="absolute right-[4%] top-0 w-10 sm:right-[10%] sm:w-14" />
-      <img src={lotusA} alt="" aria-hidden className="pointer-events-none absolute -left-8 bottom-[8%] w-[26vw] max-w-[160px]" loading="lazy" decoding="async" width={380} height={606} />
-      <img src={lotusB} alt="" aria-hidden className="pointer-events-none absolute -right-8 bottom-[12%] w-[26vw] max-w-[160px]" loading="lazy" decoding="async" width={380} height={535} />
+      <div className="pointer-events-none absolute inset-0" aria-hidden style={{ background: 'radial-gradient(90% 60% at 50% 38%, rgba(255,248,231,.97), rgba(255,248,231,.4) 70%, transparent)' }} />
+      <FloatingDiyas />
+
+      {/* temple bells across the top */}
+      <div className="cl-bells pointer-events-none absolute inset-x-0 top-0 z-10 h-[clamp(64px,19vw,110px)] bg-repeat-x" style={{ backgroundImage: `url(${toran})`, backgroundSize: 'auto 100%', backgroundPosition: 'center top' }} aria-hidden />
+
+      <img src={lotusPond} alt="" aria-hidden className="pointer-events-none absolute -left-[6%] bottom-0 z-10 w-[32vw] max-w-[210px]" loading="lazy" decoding="async" width={340} height={446} />
+      <img src={lotusPond} alt="" aria-hidden className="pointer-events-none absolute -right-[6%] bottom-0 z-10 w-[30vw] max-w-[200px] -scale-x-100" loading="lazy" decoding="async" width={340} height={446} />
       <canvas ref={canvas} className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden />
 
-      <div className="relative grid w-[min(78vw,380px)] place-items-center">
-        <Mandala className="cl-mandala absolute inset-0 h-full w-full [filter:brightness(.7)_saturate(1.3)]" drawable strokeWidth={0.8} />
-        <img src={peacock} alt="" aria-hidden className="absolute -right-[4%] -top-[6%] z-10 w-[26%] max-w-[110px]" loading="lazy" decoding="async" width={320} height={551} />
-        <Sparkles className="absolute inset-0" count={6} seed={9} />
-        <div className="cl-mono relative flex aspect-square items-center justify-center font-script text-[clamp(4.2rem,20vw,7.5rem)] leading-none">
-          <span className="text-sindoor">{bride.initial}</span>
-          <span className="mx-1 text-[0.42em] text-sindoor">❤</span>
-          <span className="text-sindoor">{groom.initial}</span>
+      {/* the monogram in a glowing gold arch, two peacocks facing each other */}
+      <div className="relative">
+        <div
+          className="cl-rays spin-slow pointer-events-none absolute left-1/2 top-[38%] h-[150vmin] w-[150vmin] -translate-x-1/2 -translate-y-1/2 opacity-70"
+          style={{
+            background: 'repeating-conic-gradient(from 0deg, rgba(212,175,55,.18) 0deg 4deg, transparent 4deg 15deg)',
+            WebkitMaskImage: 'radial-gradient(closest-side, #000 10%, transparent 60%)',
+            maskImage: 'radial-gradient(closest-side, #000 10%, transparent 60%)',
+          }}
+          aria-hidden
+        />
+        <div className="cl-arch relative mx-auto w-[min(80vw,380px)]">
+          <img src={peacock} alt="" aria-hidden className="cl-peacock-l pointer-events-none absolute -left-[16%] -top-[7%] z-10 w-[32%] max-w-[120px] -scale-x-100" loading="lazy" decoding="async" width={320} height={551} />
+          <img src={peacock} alt="" aria-hidden className="cl-peacock-r pointer-events-none absolute -right-[16%] -top-[7%] z-10 w-[32%] max-w-[120px]" loading="lazy" decoding="async" width={320} height={551} />
+          <div
+            className="rounded-t-[999px] rounded-b-[20px] p-[3px] shadow-[0_30px_70px_-26px_rgba(90,15,27,.55),0_0_60px_rgba(244,163,0,.25)]"
+            style={{ background: 'linear-gradient(160deg, #F3D98B, #B8901F 35%, #FFF1B8 55%, #A37A1C 80%, #E8C967)' }}
+          >
+            <div className="paper relative overflow-hidden rounded-t-[999px] rounded-b-[17px] px-4 pb-8 pt-[16%] text-center">
+              <div className="pointer-events-none absolute inset-[7px] rounded-t-[999px] rounded-b-[13px] border border-gold/60" aria-hidden />
+              <div ref={mono} className="relative mx-auto grid aspect-square w-[80%] max-w-[260px] place-items-center">
+                <Mandala className="cl-mandala absolute inset-0 h-full w-full [filter:brightness(.72)_saturate(1.3)]" drawable strokeWidth={0.8} />
+                <Sparkles className="absolute inset-0" count={5} seed={9} />
+                {/* clean ivory medallion so the monogram sits inside the mandala, never on top of its lines */}
+                <div className="cl-mono relative grid aspect-square w-[58%] place-items-center rounded-full bg-[#fffaf0] shadow-[0_0_0_1.5px_#D4AF37,0_0_0_5px_#fffaf0,0_0_0_6px_rgba(212,175,55,.55),0_6px_18px_rgba(140,106,22,.18)]">
+                  <span className="flex items-baseline font-script text-[clamp(2.1rem,9.5vw,3.3rem)] leading-none text-sindoor">
+                    <span>{bride.initial}</span>
+                    <span className="mx-[0.12em] font-script text-[0.62em] normal-case text-gold-dark">&amp;</span>
+                    <span>{groom.initial}</span>
+                  </span>
+                </div>
+              </div>
+              <p className="cl-in-arch relative mt-5 font-hindi text-[1.65rem] leading-none text-sindoor sm:text-[2.1rem]" lang="hi">
+                {bride.hindi}
+                <span className="mx-2 inline-block align-middle text-[0.45em]">❤</span>
+                {groom.hindi}
+              </p>
+              <p className="cl-in-arch relative mt-2 font-serif text-base italic text-maroon/85">two souls · one sacred journey</p>
+              <Divider className="cl-in-arch relative mx-auto mt-4 w-40" />
+              <p className="cl-in-arch relative mt-3 font-display text-sm font-bold tracking-[0.18em] text-gold-dark">
+                {wedding.weddingDate.numeric.join(' · ')}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <h2 className="cl-fade relative mt-8 max-w-lg font-script text-[2.6rem] leading-tight text-sindoor sm:text-6xl">{closing.line}</h2>
+      <h2 className="cl-fade relative mt-10 max-w-lg font-script text-[1.75rem] leading-tight sm:text-[2.6rem]">
+        <span className="maroon-foil foil-anim">{closing.line}</span>
+      </h2>
+
+      {/* royal procession */}
+      <div className="relative mx-auto mt-6 flex w-full max-w-2xl items-end justify-center" aria-hidden>
+        <Elephant className="cl-ele-l relative z-10 -mr-[4%] w-[33%] max-w-[220px]" />
+        <div className="cl-doli relative w-[34%] max-w-[230px]">
+          <img src={umbrella} alt="" className="absolute -top-[60%] left-1/2 w-[68%] -translate-x-1/2" loading="lazy" decoding="async" width={360} height={331} />
+          <img src={doli} alt="" className="relative w-full" loading="lazy" decoding="async" width={560} height={302} />
+        </div>
+        <Elephant className="cl-ele-r relative z-10 -ml-[4%] w-[33%] max-w-[220px] -scale-x-100" />
+      </div>
+
       <Divider className="cl-fade relative mx-auto my-6 w-56" />
       <p className="cl-fade relative font-serif text-sm uppercase tracking-[0.3em] text-gold-dark">{closing.signoff}</p>
-      <p className="cl-fade relative mt-2 font-display text-lg font-bold text-maroon sm:text-xl">{closing.families}</p>
-      <p className="cl-fade relative mt-4 font-hindi text-lg text-sindoor" lang="hi">
+      <p className="cl-fade relative mt-2 font-display text-xl font-bold text-maroon sm:text-2xl">{closing.families}</p>
+      <p className="cl-fade relative mt-3 font-hindi text-xl text-sindoor" lang="hi">
         ॥ शुभम् भवतु ॥
       </p>
 
-      <button
-        type="button"
-        onClick={scrollToTop}
-        className="cl-fade btn-ghost relative mt-12 text-maroon"
-      >
+      <button type="button" onClick={scrollToTop} className="cl-fade btn-ghost relative z-20 mt-10 text-maroon">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
           <path d="M12 19V5M5 12l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         Relive the invitation
       </button>
-      <p className="relative mt-10 font-serif text-[0.8rem] tracking-[0.2em] text-maroon/85">
-        {bride.first.toUpperCase()} &amp; {groom.first.toUpperCase()} · {wedding.weddingDate.numeric.join(' · ')}
-      </p>
     </section>
   )
 }

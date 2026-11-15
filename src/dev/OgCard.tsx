@@ -27,7 +27,7 @@ function Og() {
       <div className="absolute inset-0 flex flex-col items-center justify-center pt-20 text-center">
         <Ganesha className="w-20" />
         <p className="font-hindi text-2xl text-gold-light">॥ शुभ विवाह ॥</p>
-        <h1 className="mt-1 font-script text-[132px] leading-[1.1]">
+        <h1 className="mt-1 font-script text-[92px] leading-[1.1]">
           <span className="gold-foil-static">{bride.first}</span>
           <span className="mx-5 font-serif text-[40px] italic text-gold-light align-middle">weds</span>
           <span className="gold-foil-static">{groom.first}</span>

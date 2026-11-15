@@ -1,32 +1,24 @@
 import { useEffect, useRef } from 'react'
 import { wedding } from '../config/wedding'
-import { Ganesha } from '../components/art/Ganesha'
-import { Diya } from '../components/art/Ornaments'
+import ganpati from '../assets/ganpati.webp'
 import { Lantern } from '../components/art/Lantern'
 import lotusA from '../assets/el-lotus-a.webp'
 import lotusB from '../assets/el-lotus-b.webp'
+import lotusCenter from '../assets/lotus-center.webp'
+import elephantL from '../assets/elephant-left.webp'
+import elephantR from '../assets/elephant-right.webp'
 import { gsap, useGsap } from '../lib/scroll'
 import { reducedMotion } from '../lib/env'
 
-const DIYAS = 5
 
 export function Ganesh({ opened }: { opened: boolean }) {
   const root = useRef<HTMLElement>(null)
 
   // One gentle, time-based intro as the page loads — no scroll-locking.
   useGsap(root, () => {
-    if (reducedMotion) {
-      gsap.set('.g-lines .draw', { strokeDashoffset: 0 })
-      gsap.set('.gn-diya .diya-light', { opacity: 1 })
-      return
-    }
+    if (reducedMotion) return
     gsap.set('.gn-title, .gn-hint', { autoAlpha: 0, y: 18 })
-    gsap.set('.g-halo', { autoAlpha: 0, scale: 0.55, transformOrigin: '50% 46%' })
-    gsap.set('.g-tilak', { scale: 0, transformOrigin: '50% 50%' })
-    gsap.set('.g-lines path[fill]', { fillOpacity: 0 })
     gsap.set('.shloka p', { autoAlpha: 0, y: 14 })
-    gsap.set('.gn-diya .diya-light', { opacity: 0 })
-    gsap.set('.gn-diya', { y: 10, autoAlpha: 0.55 })
     // the scroll hint disappears as soon as the guest starts scrolling
     gsap.to('.gn-hint', { autoAlpha: 0, scrollTrigger: { trigger: root.current, start: 'top -40', toggleActions: 'play none none reverse' } })
   })
@@ -35,14 +27,12 @@ export function Ganesh({ opened }: { opened: boolean }) {
     if (!opened || reducedMotion || !root.current) return
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.3 })
-      tl.to('.g-halo', { autoAlpha: 1, scale: 1, duration: 2, ease: 'expo.out' })
-        .to('.g-lines .draw', { strokeDashoffset: 0, duration: 0.8, stagger: 0.03, ease: 'power2.inOut' }, 0.1)
-        .to('.g-lines path[fill]', { fillOpacity: 0.9, duration: 0.5, stagger: 0.04 }, '-=0.5')
-        .to('.g-tilak', { scale: 1, duration: 0.6, ease: 'back.out(3)' }, '-=0.4')
-        .to('.gn-title', { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out' }, '-=0.4')
-        .to('.shloka p', { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.3, ease: 'power2.out' }, '-=0.5')
-        .to('.gn-diya', { y: 0, autoAlpha: 1, stagger: 0.12, duration: 0.4 }, '-=0.4')
-        .to('.gn-diya .diya-light', { opacity: 1, stagger: 0.15, duration: 0.3 }, '<0.1')
+      tl.from('.gn-ganpati', { scale: 0.6, autoAlpha: 0, y: 20, transformOrigin: '50% 80%', duration: 1.2, ease: 'back.out(1.6)' })
+        .from('.gn-ele-l', { x: -60, autoAlpha: 0, duration: 1.2, ease: 'power2.out' }, 0.4)
+        .from('.gn-ele-r', { x: 60, autoAlpha: 0, duration: 1.2, ease: 'power2.out' }, 0.4)
+        .from('.gn-lotus', { scale: 0.4, autoAlpha: 0, duration: 0.9, ease: 'back.out(1.8)' }, 0.7)
+        .to('.gn-title', { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.9)
+        .to('.shloka p', { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.3, ease: 'power2.out' }, 1.1)
         .to('.gn-hint', { autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.2')
     }, root)
     return () => ctx.revert()
@@ -54,8 +44,10 @@ export function Ganesh({ opened }: { opened: boolean }) {
       <div className="pointer-events-none absolute inset-0" aria-hidden style={{ background: 'radial-gradient(90% 60% at 50% 40%, rgba(255,248,231,.95), rgba(255,248,231,.35) 70%, transparent)' }} />
       <Lantern className="absolute left-[4%] top-0 w-10 sm:left-[10%] sm:w-14" />
       <Lantern className="absolute right-[4%] top-0 w-10 sm:right-[10%] sm:w-14" />
-      <img src={lotusA} alt="" aria-hidden className="pointer-events-none absolute -left-8 bottom-[6%] w-[26vw] max-w-[150px] opacity-90" loading="lazy" decoding="async" width={380} height={606} />
-      <img src={lotusB} alt="" aria-hidden className="pointer-events-none absolute -right-8 bottom-[10%] w-[26vw] max-w-[150px] opacity-90" loading="lazy" decoding="async" width={380} height={535} />
+      <img src={lotusA} alt="" aria-hidden className="pointer-events-none absolute -left-8 bottom-[46%] w-[24vw] sm:bottom-[24%] max-w-[150px] -scale-x-100 opacity-90" loading="lazy" decoding="async" width={380} height={606} />
+      <img src={lotusB} alt="" aria-hidden className="pointer-events-none absolute -right-8 bottom-[49%] w-[24vw] sm:bottom-[27%] max-w-[150px] -scale-x-100 opacity-90" loading="lazy" decoding="async" width={380} height={535} />
+      <img src={elephantL} alt="" aria-hidden className="gn-ele-l pointer-events-none absolute bottom-[3%] left-[3%] z-10 w-[30vw] max-w-[190px]" loading="eager" decoding="async" width={460} height={287} />
+      <img src={elephantR} alt="" aria-hidden className="gn-ele-r pointer-events-none absolute bottom-[3%] right-[3%] z-10 w-[30vw] max-w-[190px]" loading="eager" decoding="async" width={460} height={287} />
       <div className="relative flex min-h-[100svh] flex-col items-center justify-center px-5 pb-[max(110px,12svh)] pt-[8svh] text-center">
         <div
           className="gn-glow pointer-events-none absolute left-1/2 top-[38%] h-[90vmin] w-[90vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-50"
@@ -71,11 +63,21 @@ export function Ganesh({ opened }: { opened: boolean }) {
           }}
           aria-hidden
         />
-        <div className="gn-art relative will-change-transform w-[min(70vw,42svh,400px)]">
-          <Ganesha className="h-auto w-full" drawable tone="dark" />
-        </div>
+        {/* Ganpati Bappa */}
+        <img
+          src={ganpati}
+          alt="Shri Ganesha seated on a lotus"
+          className="gn-ganpati relative w-[30vw] max-w-[150px]"
+          loading="eager"
+          decoding="async"
+          width={420}
+          height={654}
+        />
 
-        <h2 className="gn-title mt-1 font-hindi text-[1.65rem] leading-tight sm:text-4xl">
+        {/* lotus above the invocation */}
+        <img src={lotusCenter} alt="" aria-hidden className="gn-lotus relative mt-[6svh] w-[24vw] max-w-[120px]" loading="eager" decoding="async" width={520} height={366} />
+
+        <h2 className="gn-title mt-2 font-hindi text-[1.65rem] leading-tight sm:text-4xl">
           <span className="text-sindoor">{wedding.invocation.title}</span>
         </h2>
 
@@ -87,13 +89,6 @@ export function Ganesh({ opened }: { opened: boolean }) {
           ))}
         </div>
 
-        <div className="mt-6 flex items-end justify-center gap-3 sm:gap-6" aria-hidden>
-          {Array.from({ length: DIYAS }, (_, i) => (
-            <div key={i} className="gn-diya" style={{ marginBottom: Math.abs(i - 2) * -6 }}>
-              <Diya className="h-14 w-12 sm:h-16 sm:w-14" />
-            </div>
-          ))}
-        </div>
 
         <div className="gn-hint absolute bottom-[max(16px,env(safe-area-inset-bottom))] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5 text-center text-maroon">
           <span className="font-hindi text-base" lang="hi">

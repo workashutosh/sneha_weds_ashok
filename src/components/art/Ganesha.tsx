@@ -46,7 +46,7 @@ const STROKES: { d: string; w?: number; fill?: boolean }[] = [
   { d: 'M113 134 C 118 137, 121 141, 122 146 C 118 144, 115 141, 113.5 139' },
   { d: 'M74 132 C 78 128, 83 124, 88.4 122' },
   { d: 'M126 132 C 122 128, 117 125, 111.6 124' },
-  // ── lotus seat ──
+  // ── lotus seat (last 4 strokes; hidden with seat={false}) ──
   { d: 'M100 228 C 86 222, 82 208, 86 196 C 94 204, 98 214, 100 228 C 102 214, 106 204, 114 196 C 118 208, 114 222, 100 228 Z', w: 1.3 },
   { d: 'M100 228 C 82 230, 66 222, 58 208 C 72 206, 86 214, 100 228 C 114 214, 128 206, 142 208 C 134 222, 118 230, 100 228 Z' },
   { d: 'M100 228 C 78 236, 54 232, 40 220 C 58 214, 80 220, 100 228 C 120 220, 142 214, 160 220 C 146 232, 122 236, 100 228 Z' },
@@ -56,7 +56,9 @@ const STROKES: { d: string; w?: number; fill?: boolean }[] = [
 const RAY: Cmd[] = [['M', -3.5, -84], ['C', -2, -90, -1, -94, 0, -99], ['C', 1, -94, 2, -90, 3.5, -84]]
 const HALO_RAYS = ring(RAY, 36)
 
-export const Ganesha = memo(function Ganesha({ className, drawable, tone = 'light' }: { className?: string; drawable?: boolean; tone?: 'light' | 'dark' }) {
+const SEAT = 4
+
+export const Ganesha = memo(function Ganesha({ className, drawable, tone = 'light', seat = true }: { className?: string; drawable?: boolean; tone?: 'light' | 'dark'; seat?: boolean }) {
   const id = useIds('gg')
   const d = drawable ? { pathLength: 1 } : {}
   return (
@@ -95,7 +97,7 @@ export const Ganesha = memo(function Ganesha({ className, drawable, tone = 'ligh
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          {STROKES.map((s, i) => (
+          {(seat ? STROKES : STROKES.slice(0, -SEAT)).map((s, i) => (
             <path
               key={i}
               d={s.d}
