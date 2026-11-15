@@ -56,7 +56,7 @@ const STROKES: { d: string; w?: number; fill?: boolean }[] = [
 const RAY: Cmd[] = [['M', -3.5, -84], ['C', -2, -90, -1, -94, 0, -99], ['C', 1, -94, 2, -90, 3.5, -84]]
 const HALO_RAYS = ring(RAY, 36)
 
-export const Ganesha = memo(function Ganesha({ className, drawable }: { className?: string; drawable?: boolean }) {
+export const Ganesha = memo(function Ganesha({ className, drawable, tone = 'light' }: { className?: string; drawable?: boolean; tone?: 'light' | 'dark' }) {
   const id = useIds('gg')
   const d = drawable ? { pathLength: 1 } : {}
   return (
@@ -68,7 +68,7 @@ export const Ganesha = memo(function Ganesha({ className, drawable }: { classNam
           style={{ left: '-4%', top: '0%', width: '108%', height: '90%', background: 'radial-gradient(closest-side, rgba(244,163,0,.38), rgba(212,175,55,.12) 50%, transparent)' }}
         />
         <div className="spin-slow absolute" style={{ left: '0.5%', top: '5.4%', width: '99%', height: '82.5%' }}>
-          <svg viewBox="-100 -100 200 200" className="block h-full w-full" fill="none" stroke="#E8C967" strokeWidth=".6" opacity=".7">
+          <svg viewBox="-100 -100 200 200" className="block h-full w-full" fill="none" stroke={tone === 'dark' ? '#B8901F' : '#E8C967'} strokeWidth=".6" opacity=".7">
             <path d={HALO_RAYS} />
             <circle r="82" strokeDasharray="1 3" />
           </svg>
@@ -77,7 +77,15 @@ export const Ganesha = memo(function Ganesha({ className, drawable }: { classNam
 
       <svg viewBox="0 0 200 240" className="relative block h-full w-full" aria-hidden>
         <defs>
-          <GoldLinear id={id.gg} x1={20} y1={0} x2={180} y2={240} bright />
+          {tone === 'dark' ? (
+            <linearGradient id={id.gg} gradientUnits="userSpaceOnUse" x1={20} y1={0} x2={180} y2={240}>
+              <stop offset="0" stopColor="#C9A13A" />
+              <stop offset=".45" stopColor="#A37A1C" />
+              <stop offset="1" stopColor="#7A5510" />
+            </linearGradient>
+          ) : (
+            <GoldLinear id={id.gg} x1={20} y1={0} x2={180} y2={240} bright />
+          )}
         </defs>
         <g
           className="g-lines"
