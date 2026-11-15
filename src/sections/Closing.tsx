@@ -2,6 +2,10 @@ import { useEffect, useRef } from 'react'
 import { wedding } from '../config/wedding'
 import { Mandala } from '../components/art/Mandala'
 import { Divider } from '../components/art/Ornaments'
+import { Lantern } from '../components/art/Lantern'
+import lotusA from '../assets/el-lotus-a.webp'
+import lotusB from '../assets/el-lotus-b.webp'
+import peacock from '../assets/el-peacock.webp'
 import { fx, gsap, ScrollTrigger, scrollToTop, useGsap } from '../lib/scroll'
 import { fxBudget, isSmall, reducedMotion } from '../lib/env'
 import { music } from '../lib/audio'
@@ -11,10 +15,10 @@ import { Sparkles } from '../components/Sparkles'
 type Spark = { x: number; y: number; vx: number; vy: number; life: number; max: number; c: string; px: number; py: number }
 type Rocket = { x: number; y: number; vy: number; ty: number; c: string[] }
 const PALETTES = [
-  ['#FFF1B8', '#F3D98B', '#D4AF37'],
-  ['#FFD36B', '#F4A300', '#FF8A00'],
-  ['#FF8FA3', '#E3364F', '#FFF1B8'],
-  ['#9FF0E6', '#3FC1B5', '#FFF1B8'],
+  ['#D4AF37', '#B8901F', '#F4A300'],
+  ['#F4A300', '#E07B00', '#FFC93C'],
+  ['#E3364F', '#B3122E', '#F4A300'],
+  ['#0E6F6B', '#3FA79D', '#D4AF37'],
 ]
 
 function useFireworks(canvasRef: React.RefObject<HTMLCanvasElement | null>, sectionRef: React.RefObject<HTMLElement | null>) {
@@ -58,12 +62,12 @@ function useFireworks(canvasRef: React.RefObject<HTMLCanvasElement | null>, sect
       }
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, W, H)
-      ctx.globalCompositeOperation = 'lighter'
+      ctx.globalCompositeOperation = 'source-over'
       ctx.lineCap = 'round'
       rockets = rockets.filter((r) => {
         r.y += r.vy
         r.vy *= 0.985
-        ctx.strokeStyle = 'rgba(255,230,160,.9)'
+        ctx.strokeStyle = 'rgba(184,144,31,.85)'
         ctx.lineWidth = 2
         ctx.beginPath()
         ctx.moveTo(r.x, r.y)
@@ -153,43 +157,48 @@ export function Closing() {
   return (
     <section
       ref={root}
-      className="section grain flex flex-col items-center justify-center px-5 pb-16 pt-24 text-center"
-      style={{ background: 'radial-gradient(120% 80% at 50% 30%, #3a0a14 0%, #1c0307 60%, #0d0103 100%)' }}
+      className="section flex flex-col items-center justify-center px-5 pb-16 pt-24 text-center"
+      style={{ background: '#f3f7f7' }}
       aria-label="Closing"
     >
+      <div className="lattice pointer-events-none absolute inset-0 opacity-70" aria-hidden />
+      <div className="pointer-events-none absolute inset-0" aria-hidden style={{ background: 'radial-gradient(90% 60% at 50% 40%, rgba(255,248,231,.95), rgba(255,248,231,.35) 70%, transparent)' }} />
+      <Lantern className="absolute left-[4%] top-0 w-10 sm:left-[10%] sm:w-14" />
+      <Lantern className="absolute right-[4%] top-0 w-10 sm:right-[10%] sm:w-14" />
+      <img src={lotusA} alt="" aria-hidden className="pointer-events-none absolute -left-8 bottom-[8%] w-[26vw] max-w-[160px]" loading="lazy" decoding="async" width={380} height={606} />
+      <img src={lotusB} alt="" aria-hidden className="pointer-events-none absolute -right-8 bottom-[12%] w-[26vw] max-w-[160px]" loading="lazy" decoding="async" width={380} height={535} />
       <canvas ref={canvas} className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden />
 
       <div className="relative grid w-[min(78vw,380px)] place-items-center">
-        <Mandala className="cl-mandala absolute inset-0 h-full w-full" drawable strokeWidth={0.7} />
+        <Mandala className="cl-mandala absolute inset-0 h-full w-full [filter:brightness(.7)_saturate(1.3)]" drawable strokeWidth={0.8} />
+        <img src={peacock} alt="" aria-hidden className="absolute -right-[4%] -top-[6%] z-10 w-[26%] max-w-[110px]" loading="lazy" decoding="async" width={320} height={551} />
         <Sparkles className="absolute inset-0" count={6} seed={9} />
         <div className="cl-mono relative flex aspect-square items-center justify-center font-script text-[clamp(4.2rem,20vw,7.5rem)] leading-none">
-          <span className="gold-foil">{bride.initial}</span>
-          <span className="mx-1 text-[0.42em] text-sindoor drop-shadow-[0_0_14px_rgba(227,54,79,.8)]">❤</span>
-          <span className="gold-foil">{groom.initial}</span>
+          <span className="text-sindoor">{bride.initial}</span>
+          <span className="mx-1 text-[0.42em] text-sindoor">❤</span>
+          <span className="text-sindoor">{groom.initial}</span>
         </div>
       </div>
 
-      <h2 className="cl-fade relative mt-8 max-w-lg font-script text-[2.6rem] leading-tight sm:text-6xl">
-        <span className="gold-foil foil-anim">{closing.line}</span>
-      </h2>
+      <h2 className="cl-fade relative mt-8 max-w-lg font-script text-[2.6rem] leading-tight text-sindoor sm:text-6xl">{closing.line}</h2>
       <Divider className="cl-fade relative mx-auto my-6 w-56" />
-      <p className="cl-fade relative font-serif text-sm uppercase tracking-[0.3em] text-gold-light/95">{closing.signoff}</p>
-      <p className="cl-fade relative mt-2 font-display text-lg text-ivory sm:text-xl">{closing.families}</p>
-      <p className="cl-fade relative mt-4 font-hindi text-lg text-marigold" lang="hi">
+      <p className="cl-fade relative font-serif text-sm uppercase tracking-[0.3em] text-gold-dark">{closing.signoff}</p>
+      <p className="cl-fade relative mt-2 font-display text-lg font-bold text-maroon sm:text-xl">{closing.families}</p>
+      <p className="cl-fade relative mt-4 font-hindi text-lg text-sindoor" lang="hi">
         ॥ शुभम् भवतु ॥
       </p>
 
       <button
         type="button"
         onClick={scrollToTop}
-        className="cl-fade btn-ghost relative mt-12 text-gold-light"
+        className="cl-fade btn-ghost relative mt-12 text-maroon"
       >
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
           <path d="M12 19V5M5 12l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         Relive the invitation
       </button>
-      <p className="relative mt-10 font-serif text-[0.8rem] tracking-[0.2em] text-ivory/90">
+      <p className="relative mt-10 font-serif text-[0.8rem] tracking-[0.2em] text-maroon/85">
         {bride.first.toUpperCase()} &amp; {groom.first.toUpperCase()} · {wedding.weddingDate.numeric.join(' · ')}
       </p>
     </section>
